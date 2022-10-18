@@ -3,11 +3,12 @@ package one.digitalinnovation.parking.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import javax.transaction.Transactional;
+
 import one.digitalinnovation.parking.exception.ParkingNotFoundException;
 import one.digitalinnovation.parking.model.Parking;
 import one.digitalinnovation.parking.repository.ParkingRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ParkingService {
@@ -18,34 +19,32 @@ public class ParkingService {
         this.parkingRepository = parkingRepository;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Parking> findAll() {
         return parkingRepository.findAll();
     }
 
-    @Transactional
-    public Parking findById(String id) {
+    @Transactional(readOnly = true)
+    public Parking findById(Long id) {
         return parkingRepository.findById(id).orElseThrow(
             () -> new ParkingNotFoundException(id));
     }
 
     @Transactional
     public Parking create(Parking parkingCreate) {
-        String uuid = getUUID();
-        parkingCreate.setId(uuid);
         parkingCreate.setEntryDate(LocalDateTime.now());
         parkingRepository.save(parkingCreate);
         return parkingCreate;
     }
 
     @Transactional
-    public void delete(String id) {
+    public void delete(Long id) {
         findById(id);
         parkingRepository.deleteById(id);
     }
 
     @Transactional
-    public Parking update(String id, Parking parkingCreate) {
+    public Parking update(Long id, Parking parkingCreate) {
         Parking parking = findById(id);
         parking.setColor(parkingCreate.getColor());
         parking.setState(parkingCreate.getState());
@@ -56,15 +55,11 @@ public class ParkingService {
     }
 
     @Transactional
-    public Parking checkOut(String id) {
+    public Parking checkOut(Long id) {
         Parking parking = findById(id);
         parking.setExitDate(LocalDateTime.now());
         parking.setBill(ParkingCheckOut.getBill(parking));
         return parkingRepository.save(parking);
-    }
-
-    private static String getUUID() {
-        return UUID.randomUUID().toString().replace("-", "");
     }
 
 }

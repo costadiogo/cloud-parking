@@ -1,4 +1,4 @@
-package one.digitalinnovation.parking.controller.dto;
+package one.digitalinnovation.parking.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;

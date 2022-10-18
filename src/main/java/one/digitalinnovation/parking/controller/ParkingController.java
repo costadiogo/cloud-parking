@@ -3,8 +3,8 @@ package one.digitalinnovation.parking.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
-import one.digitalinnovation.parking.controller.dto.ParkingCreateDTO;
-import one.digitalinnovation.parking.controller.dto.ParkingDTO;
+import one.digitalinnovation.parking.dto.ParkingCreateDTO;
+import one.digitalinnovation.parking.dto.ParkingDTO;
 import one.digitalinnovation.parking.controller.mapper.ParkingMapper;
 import one.digitalinnovation.parking.model.Parking;
 import one.digitalinnovation.parking.service.ParkingService;
@@ -41,7 +41,7 @@ public class ParkingController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ParkingDTO> findById(@PathVariable String id) {
+    public ResponseEntity<ParkingDTO> findById(@PathVariable Long id) {
         Parking parking = parkingService.findById(id);
         ParkingDTO result = parkingMapper.toParkingDTO(parking);
         return ResponseEntity.ok(result);
@@ -49,7 +49,7 @@ public class ParkingController {
 
     @SuppressWarnings("rawtypes")
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable String id) {
+    public ResponseEntity delete(@PathVariable Long id) {
         parkingService.delete(id);
         return ResponseEntity.noContent().build();
     }
@@ -63,14 +63,14 @@ public class ParkingController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ParkingDTO> update(@PathVariable String id, @RequestBody ParkingCreateDTO parkingCreteDTO) {
+    public ResponseEntity<ParkingDTO> update(@PathVariable Long id, @RequestBody ParkingCreateDTO parkingCreteDTO) {
         Parking parkingUpdate = parkingMapper.toParkingCreate(parkingCreteDTO);
         Parking parking = parkingService.update(id, parkingUpdate);
         return ResponseEntity.ok(parkingMapper.toParkingDTO(parking));
     }
 
     @PostMapping("/{id}/exit")
-    public ResponseEntity<ParkingDTO> checkOut(@PathVariable String id) {
+    public ResponseEntity<ParkingDTO> checkOut(@PathVariable Long id) {
         //TODO verificar se já não esta fechado e lançar exceção
         Parking parking = parkingService.checkOut(id);
         return ResponseEntity.ok(parkingMapper.toParkingDTO(parking));
